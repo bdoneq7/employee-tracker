@@ -1,11 +1,11 @@
 
-// Include Node File System and Npm Inquirer
+// Include Npm Inquirer
 const inquirer = require('inquirer');
 
 // Include Classes from Library
-const Manager = require('./lib/Manager');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/Intern');
+const Manager = require('./lib/Department');
+const Engineer = require('./lib/Employee');
+const Intern = require('./lib/Role');
 
 // Create Employee array
 const employeeArray = []; 
