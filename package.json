@@ -1,0 +1,29 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "employee tracker sql app",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdoneq7/employee-tracker.git"
+  },
+  "author": "Brian Done",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdoneq7/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/bdoneq7/employee-tracker#readme",
+  "devDependencies": {
+    "inquirer": "^8.2.0"
+  },
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "mysql2": "^2.3.3"
+  }
+}

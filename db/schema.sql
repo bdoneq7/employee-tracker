@@ -1,0 +1,31 @@
+DROP TABLE IF EXISTS votes;
+DROP TABLE IF EXISTS candidates;
+DROP TABLE IF EXISTS parties;
+DROP TABLE IF EXISTS voters;
+
+
+CREATE TABLE parties (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  description TEXT
+);
+
+CREATE TABLE department (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(30),
+);
+
+CREATE TABLE role (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(30),
+  salary VARCHAR(30),
+  department_id INTEGER
+);
+
+CREATE TABLE employee (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(30),
+  last_name VARCHAR(30), 
+  role_id INTEGER,
+  manager_id INTEGER
+);
