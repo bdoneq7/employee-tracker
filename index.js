@@ -2,6 +2,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 require("console.table");
+const db = require('./db/connection');
 
 // Include Classes from Library
 const Manager = require('./lib/Department');
@@ -16,7 +17,7 @@ const employeeManagerMenu = () => {
             type: 'list',
             name: 'menu',
             message: "Welcome to Employee Manager: What would you like to do?",
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
             
         },
         
@@ -44,27 +45,34 @@ const employeeManagerMenu = () => {
             case "Add Department":
                 return addDepartment();
                 break;
+            case "Quit":
+                break;    
         }
     });
 }
 
 // View All Employees Function
 function viewAllEmployees() {
+    console.log("Viewing All Employees\n");
 
-    
-    const sql = `SELECT * FROM employee`;
-    
-    db.query(sql, (err, rows) => { // db is not defined?
-        if (err) {
-            res.sendStatus(500).json({ error: err.message });
-        }
-        res.json ({
-            message: 'success',
-            data: rows
-        });
+    var query =
+      `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+    FROM employee e
+    LEFT JOIN role r
+      ON e.role_id = r.id
+    LEFT JOIN department d
+    ON d.id = r.department_id
+    LEFT JOIN employee m
+      ON m.id = e.manager_id`
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("All Employees have been Viewed\n");
+  
+      employeeManagerMenu();
     });
-
-    employeeManagerMenu();
 }
     
 
@@ -84,6 +92,19 @@ function updateEmployeeRole() {
 
 // View All Roles Function
 function viewAllRoles() {
+    console.log("Viewing All Roles\n");
+
+    var query =
+      `SELECT * FROM role;`
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("All Roles have been Viewed\n");
+  
+      employeeManagerMenu();
+    });
     
     
 };
@@ -97,6 +118,19 @@ function addRole() {
 
 // View All Departments Function
 function viewAllDepartments() {
+    console.log("Viewing All Departments\n");
+
+    var query =
+      `SELECT * FROM department;`
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("All Departments have been Viewed\n");
+  
+      employeeManagerMenu();
+    });
     
     
 };
