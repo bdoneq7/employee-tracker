@@ -17,7 +17,14 @@ const employeeManagerMenu = () => {
             type: 'list',
             name: 'menu',
             message: "Welcome to Employee Manager: What would you like to do?",
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
+            choices: ['View All Employees', // Working
+            'Add Employee', // Working
+            'Update Employee Role', 
+            'View All Roles', // Working
+            'Add Role', 
+            'View All Departments', // Working
+            'Add Department', 
+            'Quit'] // Working
             
         },
         
@@ -81,6 +88,73 @@ function viewAllEmployees() {
 function addEmployee() {
 
     
+        console.log("Adding an Employee")
+      
+        var query =`SELECT r.id, r.title, r.salary FROM role r`
+      
+        db.query(query, function (err, res) {
+          if (err) throw err;
+      
+          const roleChoices = res.map(({ id, title, salary }) => ({
+            value: id, title: `${title}`, salary: `${salary}`
+          }));
+      
+          console.table(res);
+          console.log("Enter New Employee Info");
+      
+          employeeInfo(roleChoices);
+        });
+      
+        function employeeInfo(roleChoices) {
+
+            inquirer
+              .prompt([
+                {
+                  type: "input",
+                  name: "first_name",
+                  message: "What is the Employee First Name?"
+                },
+                {
+                  type: "input",
+                  name: "last_name",
+                  message: "What is the Employee Last Name?"
+                },
+                {
+                  type: "list",
+                  name: "roleId",
+                  message: "What is the Employee Role?",
+                  choices: roleChoices
+                },
+                {
+                  type: "input",
+                  name: "managerId",
+                  message: "What is the Employee Manager ID?",
+                
+                }
+              ])
+              .then(function (answers) {
+                console.log(answers);
+          
+                var query = `INSERT INTO employee SET ?`
+                
+                db.query(query,
+                  {
+                    first_name: answers.first_name,
+                    last_name: answers.last_name,
+                    role_id: answers.roleId,
+                    manager_id: answers.managerId,
+                  },
+                  function (err, res) {
+                    if (err) throw err;
+          
+                    console.table(res);
+                    console.log("New Employee Added\n");
+          
+                    employeeManagerMenu();
+                  });
+                
+              });
+          }
     
 };
 
@@ -113,6 +187,62 @@ function viewAllRoles() {
 // Add Role Function
 function addRole() {
     
+    var query =
+    `SELECT r.id, r.title, r.salary FROM role r`
+
+  db.query(query, function (err, res) {
+    if (err) throw err;
+
+    roleChoices = res.map(({ id, title, salary }) => ({
+        value: id, title: `${title}`, salary: `${salary}`      
+      }));
+
+    console.table(res);
+
+    addEmployeeRole(roleChoices);
+  });
+
+  function addEmployeeRole(roleChoices) {
+
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "What is the Role Title?"
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "What is the Role Salary?"
+        },
+        {
+          type: "list",
+          name: "departmentId",
+          message: "What is the Department Id?",
+          choices: roleChoices
+        },
+      ])
+      .then(function (answers) {
+  
+        var query = `INSERT INTO role SET ?`
+  
+        db.query(query, {
+          title: answers.title,
+          salary: answers.salary,
+          department_id: answers.departmentId
+        },
+          function (err, res) {
+            if (err) throw err;
+  
+            console.table(res);
+            console.log("New Role Added");
+  
+            employeeManagerMenu();
+          });
+  
+      });
+  }
     
 };
 
@@ -137,7 +267,37 @@ function viewAllDepartments() {
 
 // Add Department
 function addDepartment() {
+
     
+        return inquirer.prompt ([
+            {
+                type: 'input',
+                name: 'dept',
+                message: "What is the name of the department?",
+                validate: deptInput => {
+                    if (deptInput) {
+                        return true;
+                    } else {
+                        console.log ("Error: Please enter the Department name");
+                        return false; 
+                    }
+                }
+                
+            }
+
+        ]);   
+        
+        var query =
+      `INSERT INTO department`
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      console.table(res);
+      console.log("Department has been added!\n");
+  
+      employeeManagerMenu();
+    });
     
 };
 
