@@ -17,18 +17,18 @@ const employeeManagerMenu = () => {
             type: 'list',
             name: 'menu',
             message: "Welcome to Employee Manager: What would you like to do?",
-            choices: ['View All Employees', // Working
-            'Add Employee', // Working
+            choices: ['View All Employees', 
+            'Add Employee', 
             'Update Employee Role', 
-            'View All Roles', // Working
-            'Add Role', 
-            'View All Departments', // Working
+            'View All Roles', 
+            'Add Role',  
+            'View All Departments', 
             'Add Department', 
-            'Quit'] // Working
+            'Quit'] 
             
         },
         
-
+    // Return Appropriate Function based on Menu Selection
     ]).then(choice => {
         switch(choice.menu) {
             case "View All Employees":
@@ -58,7 +58,7 @@ const employeeManagerMenu = () => {
     });
 }
 
-// View All Employees Function
+////////////////////// View All Employees Function Start
 function viewAllEmployees() {
     console.log("Viewing All Employees\n");
 
@@ -78,17 +78,17 @@ function viewAllEmployees() {
       console.table(res);
       console.log("All Employees have been Viewed\n");
   
-      employeeManagerMenu();
+      employeeManagerMenu(); // Return to Main Menu
     });
 }
-    
+////////////////////// View All Employees Function End    
 
 
-// Add Employee Function
+////////////////////// Add Employee Function Start
 function addEmployee() {
 
     
-        console.log("Adding an Employee")
+        console.log("Adding an Employee\n")
       
         var query =`SELECT r.id, r.title, r.salary FROM role r`
       
@@ -100,7 +100,7 @@ function addEmployee() {
           }));
       
           console.table(res);
-          console.log("Enter New Employee Info");
+          console.log("Enter New Employee Info Below\n");
       
           employeeInfo(roleChoices);
         });
@@ -150,21 +150,107 @@ function addEmployee() {
                     console.table(res);
                     console.log("New Employee Added\n");
           
-                    employeeManagerMenu();
+                    employeeManagerMenu(); // Return to Main Menu
                   });
                 
               });
           }
     
 };
+////////////////////// Add Employee Function End
 
-// Update Employee Role Function
+
+///////////////////////// Update Employee Role Function Start
 function updateEmployeeRole() {
     
+    console.log("Updating Employee Role\n");
+
+    var query =
+      `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+    FROM employee e
+    JOIN role r
+      ON e.role_id = r.id
+    JOIN department d
+    ON d.id = r.department_id
+    JOIN employee m
+      ON m.id = e.manager_id`
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      const employeeChoices = res.map(({ id, first_name, last_name }) => ({
+        value: id, name: `${first_name} ${last_name}`      
+      }));
+  
+      console.table(res);
+  
+      roleArray(employeeChoices);
+    });
+  }
+  
+  function roleArray(employeeChoices) {
+    
+  
+    var query =
+      `SELECT r.id, r.title, r.salary 
+    FROM role r`
+    let roleChoices;
+  
+    db.query(query, function (err, res) {
+      if (err) throw err;
+  
+      roleChoices = res.map(({ id, title, salary }) => ({
+        value: id, title: `${title}`, salary: `${salary}`      
+      }));
+  
+      console.table(res);
+  
+      employeeRoleMenu(employeeChoices, roleChoices);
+    });
+  }
+  
+  function employeeRoleMenu(employeeChoices, roleChoices) {
+  
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employeeId",
+          message: "Which Employee do you want to Update?",
+          choices: employeeChoices
+        },
+        {
+          type: "list",
+          name: "roleId",
+          message: "What Role do you want to Update?",
+          choices: roleChoices
+        },
+      ])
+      .then(function (answer) {
+  
+        var query = `UPDATE employee SET role_id = ? WHERE id = ?`
+        
+        db.query(query,
+          [ answer.roleId,  
+            answer.employeeId
+          ],
+          function (err, res) {
+            if (err) throw err;
+  
+            console.table(res);
+            console.log("Employee Role Updated\n");
+  
+            employeeManagerMenu(); // Return to Main Menu
+          });
+        
+      });
+
     
 };
+///////////////////////// Update Employee Role Function End
 
-// View All Roles Function
+
+///////////////////////// View All Roles Function Start
 function viewAllRoles() {
     console.log("Viewing All Roles\n");
 
@@ -177,16 +263,18 @@ function viewAllRoles() {
       console.table(res);
       console.log("All Roles have been Viewed\n");
   
-      employeeManagerMenu();
+      employeeManagerMenu(); // Return to Main Menu
     });
     
     
 };
-    
+///////////////////////// View All Roles Function End    
 
-// Add Role Function
+
+///////////////////////// Add Role Function Start
 function addRole() {
-    
+    console.log("Adding New Role\n");
+
     var query =
     `SELECT r.id, r.title, r.salary FROM role r`
 
@@ -236,7 +324,7 @@ function addRole() {
             if (err) throw err;
   
             console.table(res);
-            console.log("New Role Added");
+            console.log("New Role Added\n");
   
             employeeManagerMenu();
           });
@@ -245,8 +333,10 @@ function addRole() {
   }
     
 };
+///////////////////////// Add Role Function End
 
-// View All Departments Function
+
+///////////////////////// View All Departments Function Start
 function viewAllDepartments() {
     console.log("Viewing All Departments\n");
 
@@ -259,47 +349,39 @@ function viewAllDepartments() {
       console.table(res);
       console.log("All Departments have been Viewed\n");
   
-      employeeManagerMenu();
+      employeeManagerMenu(); // Return to Main Menu
     });
     
     
 };
+///////////////////////// View All Departments Function End
 
-// Add Department
+
+///////////////////////// Add Department Start
 function addDepartment() {
 
-    
-        return inquirer.prompt ([
-            {
-                type: 'input',
-                name: 'dept',
-                message: "What is the name of the department?",
-                validate: deptInput => {
-                    if (deptInput) {
-                        return true;
-                    } else {
-                        console.log ("Error: Please enter the Department name");
-                        return false; 
-                    }
-                }
-                
-            }
+    console.log("Adding New Department\n");
 
-        ]);   
-        
-        var query =
-      `INSERT INTO department`
-  
-    db.query(query, function (err, res) {
-      if (err) throw err;
-  
-      console.table(res);
-      console.log("Department has been added!\n");
-  
-      employeeManagerMenu();
-    });
+    inquirer
+    .prompt({
+        type: 'input',
+        name: 'name',
+        message: 'What is the Department Name?'
+    })
+    .then((input) => {
+        db.query(`
+            INSERT INTO department (name)
+            VALUES (?)
+            `, input.name ,function(err, res) {
+            if(err) throw err;
+            console.log('New Department Added\n');
+            employeeManagerMenu(); // Return to Main Menu
+        });
+
+    });   
     
 };
+///////////////////////// Add Department End
 
 
 employeeManagerMenu();
