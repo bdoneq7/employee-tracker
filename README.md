@@ -18,7 +18,7 @@ To allow a manager to view and manage the departments, roles, and employees in t
 * [Questions](#questions)
 
 ## Screenshot
-![Alt Brian Done Employee Manager Screenshot](https://github.com/bdoneq7/employee-manager/blob/main/assets/images/screenshot.PNG?raw=true "Brian Done Employee Manager Screenshot")
+![Alt Brian Done Employee Manager Screenshot](https://github.com/bdoneq7/employee-tracker/blob/main/assets/images/screenshot.PNG?raw=true "Brian Done Employee Manager Screenshot")
 
 ## Installation 
 Please clone the repo to your local machine, install Node, Express, DotEnv, Inquirer, MySql2, and Console.table.
